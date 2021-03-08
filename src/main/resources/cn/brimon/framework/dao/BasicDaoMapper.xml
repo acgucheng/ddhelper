@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="BasicDaoMapper">
+
+    <select id="find" resultType="Map">
+        select * from student
+    </select>
+
+    <insert id="insert">
+        INSERT INTO ${tableName}
+        <foreach collection="columns" item="column" index="index"  separator="," open="(" close=")">
+            `${column.columnName}`
+        </foreach>
+        VALUES
+        <foreach collection="columns" item="column" index="index"  separator="," open="(" close=")">
+            #{column.columnValue}
+        </foreach>
+    </insert>
+    
+    <select id="findByTemplate" parameterType="Map" resultType="Map">
+        SELECT * FROM `${tableName}` WHERE
+        <foreach collection="columns" item="column" index="index" separator="AND">
+            `${column.columnName}` = #{column.columnValue}
+        </foreach>
+    </select>
+
+    <update id="update" parameterType="Map">
+        UPDATE `${tableName}` SET
+        <foreach collection="updateColumns" item="column" separator=",">
+            `${column.columnName}` = #{column.columnValue}
+        </foreach>
+        WHERE
+        <foreach collection="primaryKeyColumns" item="column" separator="AND">
+            `${column.columnName}` = #{column.columnValue}
+        </foreach>
+    </update>
+
+    <delete id="delete" parameterType="Map">
+        DELETE FROM `${tableName}` WHERE
+        <foreach collection="columns" item="column" separator="AND">
+            `${column.columnName}` = #{column.columnValue}
+        </foreach>
+    </delete>
+
+</mapper>
